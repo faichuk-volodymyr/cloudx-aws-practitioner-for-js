@@ -1,0 +1,45 @@
+service: product-service
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: eu-west-1
+
+plugins:
+  - serverless-auto-swagger
+  - serverless-webpack
+  - serverless-offline
+
+custom:
+  apiBaseUrl: https://xuhosefi2j.execute-api.eu-west-1.amazonaws.com/dev
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+    packager: npm
+
+  swagger:
+    basePath: /dev
+    info:
+      title: Products API
+      version: 1.0.0
+    host: https://xuhosefi2j.execute-api.eu-west-1.amazonaws.com/dev
+
+functions:
+  getProductList:
+    handler: src/handler.getProductList
+    events:
+      - http:
+          path: products
+          method: get
+          cors: true
+
+  getProductById:
+    handler: src/handler.getProductById
+    events:
+      - http:
+          path: products/{productId}
+          method: get
+          cors: false
