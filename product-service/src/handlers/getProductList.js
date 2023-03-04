@@ -1,11 +1,9 @@
-import { ProductService } from "../services";
 import { errorResponse, successResponse } from "../utils/apiResponses";
 
-const getProductList = async (event) => {
-  const productsService = new ProductService();
+const getProductList = (productsService) => async (event) => {
   try {
     console.info(`getProductList request start: ${event}`);
-    
+
     const products = await productsService.getProductList();
 
     const response = successResponse({

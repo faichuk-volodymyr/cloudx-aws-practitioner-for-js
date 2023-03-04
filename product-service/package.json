@@ -22,5 +22,10 @@
     "serverless-webpack": "^5.11.0",
     "webpack": "^5.75.0",
     "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1327.0",
+    "lodash": "^4.17.21",
+    "uuid": "^9.0.0"
   }
 }

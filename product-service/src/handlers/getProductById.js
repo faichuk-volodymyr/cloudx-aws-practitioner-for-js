@@ -1,10 +1,8 @@
 
-import { ProductService } from "../services";
 import { errorResponse, successResponse } from "../utils/apiResponses";
 import { ERROR_MESSAGES, STATUS_CODES } from "../constants";
 
-const getProductById = async (event) => {
-  const productService = new ProductService();
+const getProductById = (productsService) => async (event) => {
   try {
     console.info(`getProductById request start: ${event}`);
 
@@ -19,7 +17,7 @@ const getProductById = async (event) => {
       });
     }
 
-    const product = await productService.getProductById(productId);
+    const product = await productsService.getProductById(productId);
 
     if (!product) {
       console.info(`getProductById request: product no found`);

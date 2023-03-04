@@ -1,9 +1,18 @@
+import AWS from 'aws-sdk';
+import { ProductService } from "./services";
 import {
-  getProductList,
-  getProductById
+  getProductList as getProductListHandler,
+  getProductById as getProductByIdHandler,
+  createProduct as createProductHandler,
 } from './handlers';
 
-export {
-  getProductList,
-  getProductById,
-};
+AWS.config.update({ region: process.env.AWS_REGION });
+
+const dynamodbClient = new AWS.DynamoDB();
+const productService = new ProductService(dynamodbClient);
+
+export const getProductList = getProductListHandler(productService);
+
+export const getProductById = getProductByIdHandler(productService);
+
+export const createProduct = createProductHandler(productService);

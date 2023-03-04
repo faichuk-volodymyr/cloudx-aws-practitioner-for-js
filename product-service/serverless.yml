@@ -5,6 +5,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs16.x
+  role: arn:aws:iam::581741678738:role/DynamoDBLambdaAccessRole
   stage: dev
   region: eu-west-1
 
@@ -30,6 +31,9 @@ custom:
 functions:
   getProductList:
     handler: src/handler.getProductList
+    environment:
+      PRODUCT_TABLE_NAME: PRODUCTS_DATA_TABLE
+      STOCK_TABLE_NAME: STOCK_TABLE
     events:
       - http:
           path: products
@@ -38,8 +42,20 @@ functions:
 
   getProductById:
     handler: src/handler.getProductById
+    environment:
+      PRODUCT_TABLE_NAME: PRODUCTS_DATA_TABLE
     events:
       - http:
           path: products/{productId}
           method: get
+          cors: false
+
+  createProduct:
+    handler: src/handler.createProduct
+    environment:
+      PRODUCT_TABLE_NAME: PRODUCTS_DATA_TABLE
+    events:
+      - http:
+          path: products
+          method: post
           cors: false
