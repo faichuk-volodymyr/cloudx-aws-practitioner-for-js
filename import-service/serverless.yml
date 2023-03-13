@@ -1,0 +1,44 @@
+service: import-service
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: eu-west-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action: s3:*
+      Resource: arn:aws:s3:::products-upload-s3
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+    packager: npm
+
+functions:
+  importProductsFile:
+    handler: src/handler.importProductsFile
+    events:
+      - http:
+          path: import
+          method: get
+          cors: false
+          request:
+            parameters:
+              querystrings:
+                name: true
+  importFileParser:
+    handler: src/handler.importFileParser
+    events:
+      - s3:
+          bucket: products-upload-s3
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
