@@ -18,9 +18,7 @@ const importProductsFile = async ({ queryStringParameters }) => {
       ContentType: `text/csv`,
     };
   
-    console.log("s3", s3);
-
-    // const url = await s3.getSignedUrl('putObject', params);
+    const url = await s3.getSignedUrl('putObject', params);
   
     console.log('importProductsFile END');
 
