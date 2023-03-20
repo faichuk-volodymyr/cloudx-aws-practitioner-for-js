@@ -4,6 +4,7 @@ import {
   getProductList as getProductListHandler,
   getProductById as getProductByIdHandler,
   createProduct as createProductHandler,
+  catalogBatchProcess as catalogBatchHandler,
 } from './handlers';
 
 AWS.config.update({ region: process.env.AWS_REGION });
@@ -16,3 +17,5 @@ export const getProductList = getProductListHandler(productService);
 export const getProductById = getProductByIdHandler(productService);
 
 export const createProduct = createProductHandler(productService);
+
+export const catalogBatchProcess = catalogBatchHandler(productService);
