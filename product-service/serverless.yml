@@ -5,14 +5,43 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs16.x
-  role: arn:aws:iam::581741678738:role/DynamoDBLambdaAccessRole
   stage: dev
   region: eu-west-1
-
+  iamRoleStatements:
+    - Effect: Allow
+      Action: dynamodb:*
+      Resource: "*"
+    - Effect: Allow
+      Action: sqs:*
+      Resource: 
+        - Fn::GetAtt: [ CatalogItemsQueue, Arn ]
+    - Effect: Allow
+      Action: sns:*
+      Resource: !Ref CreateProductSNSTopic
+        
 plugins:
   - serverless-auto-swagger
   - serverless-webpack
   - serverless-offline
+
+resources:
+  Resources:
+    CatalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalog-items-queue
+
+    CreateProductSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: create-product-topic
+
+    CreateProductSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        TopicArn: !Ref CreateProductSNSTopic
+        Endpoint: faichuk.volodymyr@gmail.com
 
 custom:
   apiBaseUrl: https://xuhosefi2j.execute-api.eu-west-1.amazonaws.com/dev
@@ -59,3 +88,16 @@ functions:
           path: products
           method: post
           cors: false
+
+  catalogBatchProcess:
+    handler: src/handler.catalogBatchProcess
+    environment:
+      PRODUCT_TABLE_NAME: PRODUCTS_DATA_TABLE
+      STOCK_TABLE_NAME: STOCK_TABLE
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+              - CatalogItemsQueue
+              - Arn

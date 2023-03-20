@@ -1,5 +1,5 @@
 
-import { getProducts, getStocks, getProductById, createProduct } from '../queries';
+import { getProducts, getStocks, getProductById, createProduct, createTransaction } from '../queries';
 import { unmarshall } from '../utils/unmarshall';
 
 export class ProductService {
@@ -32,5 +32,9 @@ export class ProductService {
 
   createProduct = async (product) => {
     return await createProduct(this.databaseClient, { product });
+  };
+
+  createTransaction = async (products = []) => {
+    return await createTransaction(this.databaseClient, { products });
   }
 };

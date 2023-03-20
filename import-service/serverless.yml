@@ -11,6 +11,9 @@ provider:
     - Effect: Allow
       Action: s3:*
       Resource: arn:aws:s3:::products-upload-s3
+    - Effect: Allow
+      Action: sqs:*
+      Resource: arn:aws:sqs:eu-west-1:581741678738:catalog-items-queue
 
 plugins:
   - serverless-webpack
