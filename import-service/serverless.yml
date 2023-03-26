@@ -24,6 +24,18 @@ custom:
     includeModules: true
     packager: npm
 
+resources:
+  Resources:
+    Unauthorized:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+          "gatewayresponse.header.Access-Control-Allow-Headers": "'*'"
+        ResponseType: "DEFAULT_4XX"
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+
 functions:
   importProductsFile:
     handler: src/handler.importProductsFile
@@ -31,7 +43,10 @@ functions:
       - http:
           path: import
           method: get
-          cors: false
+          cors: true
+          authorizer:
+            name: basicAuthorizer
+            arn: arn:aws:lambda:eu-west-1:581741678738:function:authorization-service-dev-basicAuthorizer
           request:
             parameters:
               querystrings:
